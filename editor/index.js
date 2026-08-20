@@ -118,9 +118,10 @@ const renderApp = () => {
     if (key !== null) {
       rpc("get_image_status", { key }).then((response) => {
         if (state.selectedImageKey === key) {
+          const status = `Status: ${response.status}`;
           const statusElement = document.querySelector(".image-view .status");
-          if (statusElement) {
-            statusElement.textContent = `Status: ${response.status}`;
+          if (statusElement && statusElement.textContent !== status) {
+            statusElement.textContent = status;
           }
 
           const imgElement = document.querySelector(".image-view img");
