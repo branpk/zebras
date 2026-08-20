@@ -49,21 +49,43 @@ const renderImageList = (imagesInfo, selectImage) => {
   );
 };
 
-const renderOpListItem = (index, op, toggleOpIndex) => {
+const renderOpListItem = (index, op, toggleOpIndex, editOp) => {
   return createElement("li", { class: "op-list-item", "data-index": index }, [
     createElement("div", { class: "label" }, `${index}: ${op.type}`, {
       click: () => toggleOpIndex(index),
     }),
-    createElement("textarea", { class: "data" }, JSON.stringify(op, null, 2)),
+    createElement("textarea", { class: "data" }, JSON.stringify(op, null, 2), {
+      input: (e) => editOp(index, e.target.value),
+    }),
   ]);
 };
 
-const renderOpList = (imageInfo, toggleOpIndex) => {
-  return createElement(
-    "ol",
-    { class: "op-list" },
-    imageInfo.ops.map((op, i) => renderOpListItem(i + 1, op, toggleOpIndex)),
-  );
+const renderOpList = (imageInfo, toggleOpIndex, newOp, editOp) => {
+  return createElement("ol", { class: "op-list" }, [
+    imageInfo.ops.map((op, i) =>
+      renderOpListItem(i + 1, op, toggleOpIndex, editOp),
+    ),
+    createElement("div", { class: "op-list-new-buttons" }, [
+      createElement("button", {}, "New positive", {
+        click: () =>
+          newOp({
+            type: "positive",
+            enabled: true,
+            box: [0, 0, imageInfo.dims[0], imageInfo.dims[1]],
+            relative_sigma: 30,
+            chroma_strength: 0.5,
+          }),
+      }),
+      createElement("button", {}, "New negative", {
+        click: () =>
+          newOp({
+            type: "negative",
+            enabled: true,
+            box: [0, 0, imageInfo.dims[0], imageInfo.dims[1]],
+          }),
+      }),
+    ]),
+  ]);
 };
 
 const renderImageView = (imageInfo) => {
@@ -97,12 +119,17 @@ const renderApp = () => {
       .replaceChildren(renderImageList(imagesInfo, selectImage));
   };
 
+  const getImageInfo = (imageKey) => {
+    return state.imagesInfo.find((info) => info.key === imageKey);
+  };
+
   const selectImage = (imageKey) => {
     if (state.selectedImageKey === imageKey) {
       return;
     }
 
     selectOpIndex(null);
+    state.selectedImageKey = imageKey;
 
     document
       .querySelectorAll(".image-list-item.selected")
@@ -113,16 +140,8 @@ const renderApp = () => {
         .classList.add("selected");
     }
 
-    const opListPane = document.querySelector(".op-list-pane");
-    if (imageKey === null) {
-      opListPane.replaceChildren();
-    } else {
-      opListPane.replaceChildren(
-        renderOpList(getImageInfo(imageKey), toggleOpIndex),
-      );
-    }
+    displayOpList();
 
-    state.selectedImageKey = imageKey;
     const imageViewPane = document.querySelector(".image-view-pane");
     if (imageKey === null) {
       imageViewPane.replaceChildren();
@@ -131,10 +150,39 @@ const renderApp = () => {
     }
   };
 
+  const displayOpList = () => {
+    const opListPane = document.querySelector(".op-list-pane");
+    if (state.selectedImageKey === null) {
+      opListPane.replaceChildren();
+    } else {
+      opListPane.replaceChildren(
+        renderOpList(
+          getImageInfo(state.selectedImageKey),
+          toggleOpIndex,
+          newOp,
+          editOp,
+        ),
+      );
+    }
+  };
+
   const selectOpIndex = (index) => {
     document
       .querySelectorAll(".op-list-item.selected")
       .forEach((elt) => elt.classList.remove("selected"));
+
+    if (state.selectedOpIndex !== null) {
+      const opItem = document.querySelector(
+        `.op-list-item[data-index="${state.selectedOpIndex}"]`,
+      );
+      const imageInfo = getImageInfo(state.selectedImageKey);
+      opItem.querySelector(".data").value = JSON.stringify(
+        imageInfo.ops[state.selectedOpIndex - 1],
+        null,
+        2,
+      );
+      opItem.classList.remove("error");
+    }
 
     state.selectedOpIndex = index;
     if (index !== null) {
@@ -152,8 +200,36 @@ const renderApp = () => {
     }
   };
 
-  const getImageInfo = (imageKey) => {
-    return state.imagesInfo.find((info) => info.key === imageKey);
+  const newOp = (op) => {
+    if (state.selectedImageKey !== null) {
+      selectOpIndex(null);
+
+      const imageInfo = getImageInfo(state.selectedImageKey);
+      imageInfo.ops.push(op);
+      displayOpList();
+
+      selectOpIndex(imageInfo.ops.length);
+    }
+  };
+
+  const editOp = (index, text) => {
+    const opItemElement = document.querySelector(
+      `.op-list-item[data-index="${index}"]`,
+    );
+
+    let op;
+    try {
+      op = JSON.parse(text);
+      opItemElement.classList.remove("error");
+    } catch (e) {
+      opItemElement.classList.add("error");
+      return;
+    }
+
+    if (state.selectedImageKey !== null) {
+      const imageInfo = getImageInfo(state.selectedImageKey);
+      imageInfo.ops[index - 1] = op;
+    }
   };
 
   rpc("get_images_info").then(setImagesInfo);

@@ -5,9 +5,12 @@ import random
 import string
 from typing import Any, Literal, TypedDict
 
+from PIL import Image
+
 
 class PositiveOp(TypedDict):
     type: Literal["positive"]
+    enabled: bool
     box: list[float]
     relative_sigma: float
     chroma_strength: float
@@ -15,6 +18,7 @@ class PositiveOp(TypedDict):
 
 class NegativeOp(TypedDict):
     type: Literal["negative"]
+    enabled: bool
     box: list[float]
 
 
@@ -24,6 +28,7 @@ type ImageOp = PositiveOp | NegativeOp
 class ImageInfo(TypedDict):
     key: str
     original_path: str
+    dims: list[int]
     ops: list[ImageOp]
 
 
@@ -51,7 +56,12 @@ def get_images_info() -> list[ImageInfo]:
         if str(image_path) not in found_images:
             key = generate_image_key()
             images_info.append(
-                ImageInfo(key=key, original_path=str(image_path), ops=[])
+                ImageInfo(
+                    key=key,
+                    original_path=str(image_path),
+                    dims=list(Image.open(image_path).size),
+                    ops=[],
+                )
             )
 
     images_info.sort(key=lambda info: info["key"])
