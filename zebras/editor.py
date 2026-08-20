@@ -69,9 +69,33 @@ def get_images_info() -> list[ImageInfo]:
     return images_info
 
 
+def update_image_info(image_info: ImageInfo) -> Any:
+    images_info = get_images_info()
+    for i in range(len(images_info)):
+        if images_info[i]["key"] == image_info["key"]:
+            images_info[i] = image_info
+    save_images_info(images_info)
+    return None
+
+
+def get_image_status(key: str) -> Any:
+    for image_info in get_images_info():
+        if image_info["key"] == key:
+            break
+    return {
+        "status": "processing",
+        "path": image_info["original_path"],
+    }
+
+
 def handle_request(body: Any) -> Any:
-    if body["fn"] == "get_images_info":
+    fn = body["fn"]
+    if fn == "get_images_info":
         return get_images_info()
+    elif fn == "update_image_info":
+        return update_image_info(body["image_info"])
+    elif fn == "get_image_status":
+        return get_image_status(body["key"])
     raise Exception("unhandled request: ", json.dumps(body, indent=2))
 
 

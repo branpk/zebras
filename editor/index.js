@@ -89,10 +89,14 @@ const renderOpList = (imageInfo, toggleOpIndex, newOp, editOp) => {
 };
 
 const renderImageView = (imageInfo) => {
-  return createElement("img", {
-    class: "image-view-img",
-    src: `/${imageInfo.original_path}`,
-  });
+  return createElement("div", { class: "image-view" }, [
+    createElement("div", { class: "status" }, ["Status: unknown"]),
+    createElement("div", { class: "img-wrapper" }, [
+      createElement("img", {
+        src: `/${imageInfo.original_path}`,
+      }),
+    ]),
+  ]);
 };
 
 const renderApp = () => {
@@ -108,6 +112,25 @@ const renderApp = () => {
     selectedOpIndex: null,
   };
   window.state = state;
+
+  const refreshStatus = () => {
+    const key = state.selectedImageKey;
+    if (key !== null) {
+      rpc("get_image_status", { key }).then((response) => {
+        if (state.selectedImageKey === key) {
+          const statusElement = document.querySelector(".image-view .status");
+          if (statusElement) {
+            statusElement.textContent = `Status: ${response.status}`;
+          }
+
+          const imgElement = document.querySelector(".image-view img");
+          if (imgElement) {
+            imgElement.src = `/${response.path}`;
+          }
+        }
+      });
+    }
+  };
 
   const setImagesInfo = (imagesInfo) => {
     selectOpIndex(null);
@@ -148,6 +171,8 @@ const renderApp = () => {
     } else {
       imageViewPane.replaceChildren(renderImageView(getImageInfo(imageKey)));
     }
+
+    refreshStatus();
   };
 
   const displayOpList = () => {
@@ -200,6 +225,12 @@ const renderApp = () => {
     }
   };
 
+  const updateImageInfo = (imageInfo) => {
+    rpc("update_image_info", {
+      image_info: imageInfo,
+    });
+  };
+
   const newOp = (op) => {
     if (state.selectedImageKey !== null) {
       selectOpIndex(null);
@@ -209,6 +240,8 @@ const renderApp = () => {
       displayOpList();
 
       selectOpIndex(imageInfo.ops.length);
+
+      updateImageInfo(imageInfo);
     }
   };
 
@@ -226,13 +259,14 @@ const renderApp = () => {
       return;
     }
 
-    if (state.selectedImageKey !== null) {
-      const imageInfo = getImageInfo(state.selectedImageKey);
-      imageInfo.ops[index - 1] = op;
-    }
+    const imageInfo = getImageInfo(state.selectedImageKey);
+    imageInfo.ops[index - 1] = op;
+
+    updateImageInfo(imageInfo);
   };
 
   rpc("get_images_info").then(setImagesInfo);
+  setInterval(refreshStatus, 300);
 
   return app;
 };
