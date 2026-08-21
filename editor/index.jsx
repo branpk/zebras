@@ -63,9 +63,11 @@ function OpListItem({ index, op, isSelected, toggleOpIndex, updateOp }) {
         className="label"
         onClick={() => toggleOpIndex(index)}
       >{`${index}: ${op.type}`}</div>
-      <textarea class="data" onInput={onEdit}>
-        {JSON.stringify(op, null, 2)}
-      </textarea>
+      <textarea
+        class="data"
+        onChange={onEdit}
+        value={JSON.stringify(op, null, 2)}
+      ></textarea>
     </li>
   );
 }
@@ -126,8 +128,95 @@ function ImageView({ imageStatus, imageUrl }) {
     <div className="image-view">
       <div class="status">Status: {imageStatus}</div>
       <div class="img-wrapper">
-        <img src={imageUrl} />
+        <img class="img" src={imageUrl} />
       </div>
+    </div>
+  );
+}
+
+function ImageOverlay({ box, setBox }) {
+  const [dragState, setDragState] = useState(null);
+
+  const updateBox = () => {
+    if (!dragState) {
+      return;
+    }
+    const img = document.getElementsByClassName("img")[0];
+    if (!img) {
+      return;
+    }
+
+    const boxLeft = Math.min(dragState.start[0], dragState.current[0]);
+    const boxRight = Math.max(dragState.start[0], dragState.current[0]);
+    const boxTop = Math.min(dragState.start[1], dragState.current[1]);
+    const boxBottom = Math.max(dragState.start[1], dragState.current[1]);
+
+    const imgRect = img.getBoundingClientRect();
+
+    const getX = (x) =>
+      Math.min(
+        Math.max(((x - imgRect.left) / imgRect.width) * img.naturalWidth, 0),
+        img.naturalWidth,
+      );
+    const getY = (y) =>
+      Math.min(
+        Math.max(((y - imgRect.top) / imgRect.height) * img.naturalHeight, 0),
+        img.naturalHeight,
+      );
+
+    const box = [getX(boxLeft), getY(boxTop), getX(boxRight), getY(boxBottom)];
+    if (Math.min(box[2] - box[0], box[3] - box[1]) < 5) {
+      return;
+    }
+    setBox(box);
+  };
+
+  useEffect(() => {
+    const listener = () => {
+      if (dragState) {
+        updateBox();
+        setDragState(null);
+      }
+    };
+    document.addEventListener("mouseup", listener);
+    return () => document.removeEventListener("mouseup", listener);
+  });
+
+  useEffect(() => {
+    const listener = (e) => {
+      if (dragState) {
+        setDragState((state) => ({
+          ...state,
+          current: [e.clientX, e.clientY],
+        }));
+      }
+    };
+    document.addEventListener("mousemove", listener);
+    return () => document.removeEventListener("mousemove", listener);
+  });
+
+  return (
+    <div
+      className="image-overlay"
+      onMouseDown={(e) => {
+        setDragState({
+          start: [e.clientX, e.clientY],
+          current: [e.clientX, e.clientY],
+        });
+        e.preventDefault();
+      }}
+    >
+      {dragState && (
+        <div
+          className="drag-box"
+          style={{
+            top: `${Math.min(dragState.start[1], dragState.current[1])}px`,
+            left: `${Math.min(dragState.start[0], dragState.current[0])}px`,
+            width: `${Math.abs(dragState.start[0] - dragState.current[0])}px`,
+            height: `${Math.abs(dragState.start[1] - dragState.current[1])}px`,
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -212,6 +301,18 @@ function App() {
     }
   };
 
+  const setBox = (box) => {
+    if (selectedImageInfo && selectedOpIndex !== null) {
+      updateImageInfo({
+        ...selectedImageInfo,
+        ops: selectedImageInfo.ops.with(selectedOpIndex, {
+          ...selectedImageInfo.ops[selectedOpIndex],
+          box,
+        }),
+      });
+    }
+  };
+
   useEffect(() => {
     rpc("get_images_info").then(setImagesInfo);
   }, []);
@@ -251,6 +352,12 @@ function App() {
               imageUrls[selectedImageKey] ??
               `/${selectedImageInfo.original_path}`
             }
+          />
+        )}
+        {selectedImageInfo && selectedOpIndex !== null && (
+          <ImageOverlay
+            box={selectedImageInfo.ops[selectedOpIndex].box}
+            setBox={setBox}
           />
         )}
       </div>
