@@ -106,7 +106,7 @@ function OpList({
             newOp({
               type: "positive",
               enabled: true,
-              box: [0, 0, imageInfo.dims[0], imageInfo.dims[1]],
+              box: [0, 0, 0, 0],
               relative_sigma: 30,
               chroma_strength: 0.5,
             })
@@ -119,7 +119,7 @@ function OpList({
             newOp({
               type: "negative",
               enabled: true,
-              box: [0, 0, imageInfo.dims[0], imageInfo.dims[1]],
+              box: [0, 0, 0, 0],
             })
           }
         >
@@ -259,7 +259,7 @@ function App() {
         }));
         setImageUrls((urls) => ({
           ...urls,
-          [selectedImageKey]: `/${response.path}`,
+          [selectedImageKey]: `/${response.path}?t=${Date.now()}`,
         }));
       });
     }
@@ -350,7 +350,7 @@ function App() {
         {selectedImageInfo && (
           <ImageView
             imageInfo={selectedImageInfo}
-            imageStatus={imageStatuses[selectedImageKey] ?? "unknown"}
+            imageStatus={imageStatuses[selectedImageKey] ?? "..."}
             imageUrl={
               imageUrls[selectedImageKey] ??
               `/${selectedImageInfo.original_path}`

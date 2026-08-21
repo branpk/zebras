@@ -6,23 +6,9 @@ import string
 from typing import Any, Literal, TypedDict
 
 from PIL import Image
+import filelock
 
-
-class PositiveOp(TypedDict):
-    type: Literal["positive"]
-    enabled: bool
-    box: list[float]
-    relative_sigma: float
-    chroma_strength: float
-
-
-class NegativeOp(TypedDict):
-    type: Literal["negative"]
-    enabled: bool
-    box: list[float]
-
-
-type ImageOp = PositiveOp | NegativeOp
+from zebras.inversion import ImageOp
 
 
 class ImageInfo(TypedDict):
@@ -69,34 +55,56 @@ def get_images_info() -> list[ImageInfo]:
     return images_info
 
 
-def update_image_info(image_info: ImageInfo) -> Any:
+def get_default_status(image_info: ImageInfo) -> Any:
+    return {
+        "status": "new",
+        "latest_path": image_info["original_path"],
+    }
+
+
+def update_image_info(image_info: ImageInfo) -> None:
     images_info = get_images_info()
     for i in range(len(images_info)):
         if images_info[i]["key"] == image_info["key"]:
             images_info[i] = image_info
     save_images_info(images_info)
-    return None
+
+    with open("images/status.json") as f:
+        statuses = json.load(f)
+    status = statuses.setdefault(image_info["key"], get_default_status(image_info))
+    status["status"] = "queued"
+    with open("images/status.json", "w") as f:
+        json.dump(statuses, f, indent=2)
 
 
 def get_image_status(key: str) -> Any:
     for image_info in get_images_info():
         if image_info["key"] == key:
             break
+    assert image_info["key"] == key
+
+    with open("images/status.json") as f:
+        statuses = json.load(f)
+    status = statuses.get(
+        key,
+        get_default_status(image_info),
+    )
     return {
-        "status": "processing",
-        "path": image_info["original_path"],
+        "status": status["status"],
+        "path": status["latest_path"],
     }
 
 
 def handle_request(body: Any) -> Any:
-    fn = body["fn"]
-    if fn == "get_images_info":
-        return get_images_info()
-    elif fn == "update_image_info":
-        return update_image_info(body["image_info"])
-    elif fn == "get_image_status":
-        return get_image_status(body["key"])
-    raise Exception("unhandled request: ", json.dumps(body, indent=2))
+    with filelock.FileLock("images/.lock"):
+        fn = body["fn"]
+        if fn == "get_images_info":
+            return get_images_info()
+        elif fn == "update_image_info":
+            return update_image_info(body["image_info"])
+        elif fn == "get_image_status":
+            return get_image_status(body["key"])
+        raise Exception("unhandled request: ", json.dumps(body, indent=2))
 
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
