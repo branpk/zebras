@@ -41,8 +41,15 @@ function ImageList({ imagesInfo, selectedImageKey, selectImage }) {
 
 function OpListItem({ index, op, isSelected, toggleOpIndex, updateOp }) {
   const [isError, setIsError] = useState(false);
+  const [editedText, setEditedText] = useState(null);
+
+  useEffect(() => {
+    setIsError(false);
+    setEditedText(null);
+  }, [op]);
 
   const onEdit = (e) => {
+    setEditedText(e.target.value);
     let op = undefined;
     try {
       op = JSON.parse(e.target.value);
@@ -66,7 +73,7 @@ function OpListItem({ index, op, isSelected, toggleOpIndex, updateOp }) {
       <textarea
         class="data"
         onChange={onEdit}
-        value={JSON.stringify(op, null, 2)}
+        value={editedText ?? JSON.stringify(op, null, 2)}
       ></textarea>
     </li>
   );
@@ -264,10 +271,6 @@ function App() {
         existing.key === selectedImageKey ? imageInfo : existing,
       ),
     );
-    setImageStatuses((statuses) => ({
-      ...statuses,
-      [imageInfo.key]: "processing",
-    }));
     rpc("update_image_info", {
       image_info: imageInfo,
     });
