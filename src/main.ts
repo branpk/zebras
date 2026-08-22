@@ -70,8 +70,11 @@ function App() {
 
   const images = IMAGE_KEYS.map((key) =>
     html("div", { class: "image-wrapper" }, [
-      html("img", { class: "image-dark", src: `./zebras/dark/${key}.jpg` }),
       html("img", { class: "image-light", src: `./zebras/light/${key}.jpg` }),
+      html("img", {
+        class: "image-dark",
+        src: `./zebras/dark/${key}.jpg`,
+      }),
     ]),
   );
 

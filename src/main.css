@@ -72,17 +72,17 @@ body {
   display: block;
   border-radius: 4px;
 }
-.image-wrapper .image-light {
+.image-wrapper .image-dark {
   position: absolute;
   top: 0;
 }
 
 .image-list img {
-  z-index: 0;
+  visibility: hidden;
 }
 .app.light-mode .image-light {
-  z-index: 1;
+  visibility: visible;
 }
 .app.dark-mode .image-dark {
-  z-index: 1;
+  visibility: visible;
 }
