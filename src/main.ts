@@ -50,6 +50,14 @@ function App() {
     darkModeToggle.textContent = isDarkMode
       ? "Disable dark mode"
       : "Enable dark mode";
+    images.forEach((image, i) => {
+      image.setAttribute(
+        "src",
+        isDarkMode
+          ? `./zebras/dark/${IMAGE_KEYS[i]}.jpg`
+          : `./zebras/light/${IMAGE_KEYS[i]}.jpg`,
+      );
+    });
   };
 
   const darkModeToggle = html(
@@ -61,15 +69,19 @@ function App() {
     },
   );
 
-  const images = IMAGE_KEYS.map((key) => html("img", { src: `` }));
+  const images = IMAGE_KEYS.map((key) =>
+    html("img", { src: `./zebras/light/${key}.jpg` }),
+  );
 
   return html("div", { class: "app" }, [
     html("div", { class: "app-header" }, [
       html("div", { class: "title" }, ["pictures of zebras"]),
       darkModeToggle,
     ]),
-    html("div", { class: "app-body" }, []),
+    html("div", { class: "app-body" }, [
+      html("div", { class: "image-list" }, images),
+    ]),
   ]);
 }
 
-document.getElementById("app")!.replaceChildren(App());
+document.getElementById("root")!.replaceChildren(App());
