@@ -100,6 +100,11 @@ body {
   margin-top: 10px;
 }
 
+.image-view .mode-toggle {
+  margin-top: 10px;
+  z-index: 20;
+}
+
 .image-view .img-wrapper {
   min-width: 0;
   min-height: 0;

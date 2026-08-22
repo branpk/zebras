@@ -130,12 +130,28 @@ function OpList({
   );
 }
 
-function ImageView({ imageStatus, imageUrl }) {
+function ImageView({ imageStatus, lightImageUrl, darkImageUrl }) {
+  const [mode, setMode] = useState("Dark");
   return (
     <div className="image-view">
       <div class="status">Status: {imageStatus}</div>
+      <button
+        class="mode-toggle"
+        onClick={() => {
+          if (mode === "Dark") {
+            setMode("Light");
+          } else {
+            setMode("Dark");
+          }
+        }}
+      >
+        Mode: {mode}
+      </button>
       <div class="img-wrapper">
-        <img class="img" src={imageUrl} />
+        <img
+          class="img"
+          src={mode === "Light" ? lightImageUrl : darkImageUrl}
+        />
       </div>
     </div>
   );
@@ -351,7 +367,8 @@ function App() {
           <ImageView
             imageInfo={selectedImageInfo}
             imageStatus={imageStatuses[selectedImageKey] ?? "..."}
-            imageUrl={
+            lightImageUrl={`/${selectedImageInfo.original_path}`}
+            darkImageUrl={
               imageUrls[selectedImageKey] ??
               `/${selectedImageInfo.original_path}`
             }

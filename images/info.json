@@ -150,7 +150,20 @@
       1287,
       1931
     ],
-    "ops": []
+    "ops": [
+      {
+        "type": "positive",
+        "enabled": true,
+        "box": [
+          0,
+          154.17945787494656,
+          1287,
+          1782.2282787922145
+        ],
+        "relative_sigma": 30,
+        "chroma_strength": 0.5
+      }
+    ]
   },
   {
     "key": "DmXfJ9lt",
