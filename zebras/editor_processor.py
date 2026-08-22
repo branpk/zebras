@@ -69,8 +69,8 @@ while True:
             continue
 
         images = [
-            (f"images/light/{image_key}.jpg", original),
-            (f"images/dark/{image_key}.jpg", result),
+            (f"public/zebras/light/{image_key}.jpg", original),
+            (f"public/zebras/dark/{image_key}.jpg", result),
         ]
         for path, img in images:
             Path(path).parent.mkdir(parents=True, exist_ok=True)

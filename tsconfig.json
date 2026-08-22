@@ -3,10 +3,12 @@
     "module": "esnext",
     "target": "es2022",
     "noEmit": true,
+    "moduleResolution": "bundler",
 
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "types": ["vite/client"],
 
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
