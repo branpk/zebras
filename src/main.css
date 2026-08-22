@@ -1,10 +1,12 @@
-body {
-  padding: 0;
-  margin: 0;
+html {
+  scrollbar-color: #6c6c6c #282828;
 }
 
 body {
+  padding: 0;
+  margin: 0;
   background-color: #090b1b;
+  font-family: Palatino, serif;
 }
 
 .app {
@@ -25,13 +27,13 @@ body {
 
 .app-header .title {
   color: #b1b1b1;
-  font-family: Arial, sans-serif;
   font-size: 1.5rem;
 }
 
 .app-body {
   flex: 1;
   overflow-y: scroll;
+  overscroll-behavior: contain;
 }
 
 .image-list {
@@ -41,8 +43,34 @@ body {
   align-items: center;
 }
 
-.image-list img {
+.image-wrapper {
+  margin: 20px 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* box-sizing: border-box;
+  border: 1px solid green; */
+}
+
+.image-wrapper img {
   max-width: 100%;
   max-height: 600px;
   display: block;
+  border-radius: 4px;
+}
+.image-wrapper .image-light {
+  position: absolute;
+  top: 0;
+}
+
+.image-list img {
+  z-index: 0;
+}
+.app.light-mode .image-light {
+  z-index: 1;
+}
+.app.dark-mode .image-dark {
+  z-index: 1;
 }
