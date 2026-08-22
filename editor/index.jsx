@@ -218,6 +218,16 @@ function ImageOverlay({ box, setBox }) {
     return () => document.removeEventListener("mousemove", listener);
   });
 
+  useEffect(() => {
+    const listener = (e) => {
+      if (e.key === "Escape") {
+        setDragState(null);
+      }
+    };
+    document.addEventListener("keydown", listener);
+    return () => document.removeEventListener("keydown", listener);
+  });
+
   return (
     <div
       className="image-overlay"
