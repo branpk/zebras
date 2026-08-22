@@ -77,11 +77,15 @@ function App() {
 
   const app = html("div", { class: "app light-mode" }, [
     html("div", { class: "app-header" }, [
-      html("div", { class: "title" }, ["pictures of zebras"]),
-      darkModeToggle,
+      html("div", { class: "app-header-content" }, [
+        html("div", { class: "title" }, ["pictures of zebras"]),
+        darkModeToggle,
+      ]),
     ]),
     html("div", { class: "app-body" }, [
-      html("div", { class: "image-list" }, images),
+      html("div", { class: "app-body-content" }, [
+        html("div", { class: "image-list" }, images),
+      ]),
     ]),
   ]);
 

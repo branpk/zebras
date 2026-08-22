@@ -1,11 +1,7 @@
-html {
-  scrollbar-color: #6c6c6c #282828;
-}
-
 body {
   padding: 0;
   margin: 0;
-  background-color: #090b1b;
+  background-color: #cdd2ff;
   font-family: Palatino, serif;
 }
 
@@ -17,16 +13,24 @@ body {
 }
 
 .app-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgb(145 153 226);
+}
+
+.app-header-content {
+  flex: 1;
+  max-width: calc(min(1000px, 100% - 60px));
   height: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 30px;
-  border-bottom: 1px solid #434343;
 }
 
-.app-header .title {
-  color: #b1b1b1;
+.app-header-content .title {
+  color: #4c4f6e;
   font-size: 1.5rem;
 }
 
@@ -34,6 +38,14 @@ body {
   flex: 1;
   overflow-y: scroll;
   overscroll-behavior: contain;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.app-body-content {
+  flex: 1;
+  max-width: calc(min(1000px, 100% - 60px));
 }
 
 .image-list {
