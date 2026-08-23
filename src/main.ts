@@ -92,7 +92,7 @@ function App() {
         width: `${width}px`,
         height: `${height}px`,
       }),
-      html("div", {}, [key]),
+      // html("div", {}, [key]),
     ]),
   );
 
