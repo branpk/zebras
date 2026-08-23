@@ -76,7 +76,6 @@ body {
 }
 .dark-mode-toggle .light-icon {
   left: 3px;
-  background-image: url(/zebras/icons/sun.svg);
   background-size: contain;
 }
 .app.light-mode .dark-mode-toggle .light-icon {
@@ -84,7 +83,6 @@ body {
 }
 .dark-mode-toggle .dark-icon {
   right: 3px;
-  background-image: url(/zebras/icons/moon.svg);
   background-size: contain;
 }
 .app.dark-mode .dark-mode-toggle .dark-icon {
@@ -121,7 +119,9 @@ body {
 }
 
 .image-wrapper img {
+  object-fit: contain;
   max-width: 100%;
+  height: auto;
   max-height: 600px;
   display: block;
   border-radius: 4px;

@@ -1,4 +1,6 @@
 import "./main.css";
+import sunIcon from "./assets/sun.svg";
+import moonIcon from "./assets/moon.svg";
 
 function html(
   tag: string,
@@ -42,6 +44,30 @@ const IMAGE_KEYS = [
   // "DmXfJ9lt",
 ];
 
+const IMAGES: [string, [number, number]][] = [
+  ["wlKqmQP1", [1536, 1024]],
+  ["HzrMFIp7", [1536, 1024]],
+  ["eZfrguVj", [1536, 1024]],
+  ["K6alOenI", [1536, 1024]],
+  ["bS1WqnzE", [1430, 1100]],
+  ["r5xAUZEK", [1537, 1023]],
+  ["qUXGHIrO", [1537, 1023]],
+  ["ijOSySK4", [1448, 1086]],
+  ["Q8wbPlSy", [1493, 1053]],
+  ["W6DXchRX", [1023, 1537]],
+  ["5dm83Xga", [1122, 1402]],
+  ["IJVW9F1G", [1533, 1026]],
+  ["80NPHpZ6", [1023, 1537]],
+  ["Lcdj0712", [1122, 1402]],
+  ["FZjRUnLW", [1606, 979]],
+  ["o6yVUfPB", [1536, 1024]],
+  ["qb4dfkoJ", [1537, 1023]],
+  ["mfAGI3rU", [1536, 1024]],
+  ["32zgzxZd", [1023, 1537]],
+  ["dtJlqi7L", [1055, 1491]],
+  ["ZPlkjtvi", [1023, 1537]],
+];
+
 function App() {
   let isDarkMode = false;
 
@@ -54,9 +80,6 @@ function App() {
       app.classList.add("light-mode");
       app.classList.remove("dark-mode");
     }
-    // darkModeToggle.textContent = isDarkMode
-    //   ? "Disable dark mode"
-    //   : "Enable dark mode";
   };
 
   const darkModeToggle = html(
@@ -64,20 +87,35 @@ function App() {
     { class: "dark-mode-toggle" },
     [
       html("span", { class: "toggle-thumb" }),
-      html("span", { class: "light-icon" }),
-      html("span", { class: "dark-icon" }),
+      html("span", {
+        class: "light-icon",
+        style: `background-image: url("${sunIcon}")`,
+      }),
+      html("span", {
+        class: "dark-icon",
+        style: `background-image: url("${moonIcon}")`,
+      }),
     ],
     {
       click: toggleDarkMode,
     },
   );
 
-  const images = IMAGE_KEYS.map((key) =>
+  const images = IMAGES.map(([key, [width, height]]) =>
     html("div", { class: "image-wrapper" }, [
-      html("img", { class: "image-light", src: `./zebras/light/${key}.jpg` }),
+      html("img", {
+        class: "image-light",
+        src: `./zebras/light-resized/${key}.jpg`,
+        loading: "lazy",
+        width: `${width}px`,
+        height: `${height}px`,
+      }),
       html("img", {
         class: "image-dark",
         src: `./zebras/dark-v2/${key}.jpg`,
+        loading: "lazy",
+        width: `${width}px`,
+        height: `${height}px`,
       }),
       // html("div", {}, [key]),
     ]),
