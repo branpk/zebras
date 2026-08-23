@@ -1,7 +1,7 @@
 body {
   padding: 0;
   margin: 0;
-  background-color: #cdd2ff;
+  background-color: #e4e7ff;
   font-family: Palatino, serif;
 }
 
@@ -22,16 +22,73 @@ body {
 .app-header-content {
   flex: 1;
   max-width: calc(min(1000px, 100% - 60px));
-  height: 50px;
+  height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 50px;
 }
 
 .app-header-content .title {
   color: #4c4f6e;
   font-size: 1.5rem;
+}
+
+.dark-mode-toggle {
+  all: unset;
+  position: relative;
+  cursor: pointer;
+  width: 90px;
+  height: 40px;
+  background-color: #c5c5c5;
+  border-radius: 20px;
+}
+
+.dark-mode-toggle .toggle-thumb {
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  border-radius: 17px;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  background-color: #f2da1a;
+  transition:
+    background-color 0.1s linear,
+    left 0.1s linear;
+  z-index: 0;
+}
+.app.dark-mode .dark-mode-toggle .toggle-thumb {
+  left: calc(100% - 3px - 34px);
+  background-color: #350d90;
+}
+
+.dark-mode-toggle .light-icon,
+.dark-mode-toggle .dark-icon {
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  position: absolute;
+  top: 3px;
+  z-index: 10;
+  opacity: 0.5;
+  transition: opacity 0.1s linear;
+}
+.dark-mode-toggle .light-icon {
+  left: 3px;
+  background-image: url(/zebras/icons/sun.svg);
+  background-size: contain;
+}
+.app.light-mode .dark-mode-toggle .light-icon {
+  opacity: 1;
+}
+.dark-mode-toggle .dark-icon {
+  right: 3px;
+  background-image: url(/zebras/icons/moon.svg);
+  background-size: contain;
+}
+.app.dark-mode .dark-mode-toggle .dark-icon {
+  opacity: 1;
 }
 
 .app-body {
@@ -61,9 +118,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  /* box-sizing: border-box;
-  border: 1px solid green; */
 }
 
 .image-wrapper img {

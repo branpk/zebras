@@ -18,9 +18,9 @@ function html(
 }
 
 const IMAGE_KEYS = [
+  "wlKqmQP1",
   "HzrMFIp7",
   "eZfrguVj",
-  "wlKqmQP1",
   "K6alOenI",
   "bS1WqnzE",
   "r5xAUZEK",
@@ -54,15 +54,19 @@ function App() {
       app.classList.add("light-mode");
       app.classList.remove("dark-mode");
     }
-    darkModeToggle.textContent = isDarkMode
-      ? "Disable dark mode"
-      : "Enable dark mode";
+    // darkModeToggle.textContent = isDarkMode
+    //   ? "Disable dark mode"
+    //   : "Enable dark mode";
   };
 
   const darkModeToggle = html(
     "button",
     { class: "dark-mode-toggle" },
-    ["Enable dark mode"],
+    [
+      html("span", { class: "toggle-thumb" }),
+      html("span", { class: "light-icon" }),
+      html("span", { class: "dark-icon" }),
+    ],
     {
       click: toggleDarkMode,
     },
