@@ -18,28 +18,28 @@ function html(
 }
 
 const IMAGE_KEYS = [
-  "5dm83Xga",
-  "32zgzxZd",
-  "80NPHpZ6",
-  "bS1WqnzE",
-  "DmXfJ9lt",
-  "dtJlqi7L",
-  "eZfrguVj",
-  "FZjRUnLW",
   "HzrMFIp7",
-  "ijOSySK4",
-  "IJVW9F1G",
-  "K6alOenI",
-  "Lcdj0712",
-  "mfAGI3rU",
-  "o6yVUfPB",
-  "Q8wbPlSy",
-  "qb4dfkoJ",
-  "qUXGHIrO",
-  "r5xAUZEK",
-  "W6DXchRX",
+  "eZfrguVj",
   "wlKqmQP1",
+  "K6alOenI",
+  "bS1WqnzE",
+  "r5xAUZEK",
+  "qUXGHIrO",
+  "ijOSySK4",
+  "Q8wbPlSy",
+  "W6DXchRX",
+  "5dm83Xga",
+  "IJVW9F1G",
+  "80NPHpZ6",
+  "Lcdj0712",
+  "FZjRUnLW",
+  "o6yVUfPB",
+  "qb4dfkoJ",
+  "mfAGI3rU",
+  "32zgzxZd",
+  "dtJlqi7L",
   "ZPlkjtvi",
+  // "DmXfJ9lt",
 ];
 
 function App() {
@@ -73,8 +73,9 @@ function App() {
       html("img", { class: "image-light", src: `./zebras/light/${key}.jpg` }),
       html("img", {
         class: "image-dark",
-        src: `./zebras/dark/${key}.jpg`,
+        src: `./zebras/dark-v2/${key}.jpg`,
       }),
+      // html("div", {}, [key]),
     ]),
   );
 
