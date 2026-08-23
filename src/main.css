@@ -132,11 +132,17 @@ body {
 }
 
 .image-list img {
-  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.1s linear;
+  z-index: 1;
 }
 .app.light-mode .image-light {
-  visibility: visible;
+  opacity: 1;
+  transition: none;
+  z-index: 0;
 }
 .app.dark-mode .image-dark {
-  visibility: visible;
+  opacity: 1;
+  transition: none;
+  z-index: 0;
 }
