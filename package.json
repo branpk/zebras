@@ -1,8 +1,7 @@
 {
   "name": "zebras",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -11,13 +10,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/branpk/zebras.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/branpk/zebras/issues"
   },
   "homepage": "https://github.com/branpk/zebras#readme",
   "devDependencies": {
